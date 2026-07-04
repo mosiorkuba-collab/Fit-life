@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fit-Life — Zbuduj formę z planem</title>
+<meta name="description" content="Fit-Life: indywidualne plany treningowe i jadłospisy. Sprawdzone metody, wsparcie na każdym kroku.">
+<style>
+  :root{
+    --green:#22a13c;
+    --green-2:#1e9a39;
+    --green-dark:#1e5631;
+    --ink:#ffffff;
+    --ink-2:#f4f7f4;
+    --card:#ffffff;
+    --card-2:#f6f8f6;
+    --muted:#5f6b60;
+    --line:rgba(17,30,17,.12);
+    --white:#141a13;
+    --max:1140px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  html{background:#0b1210}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#ffffff 0%,#f5f9f5 18%,#edf4ee 34%,#e4efe6 50%,#d8e9db 64%,#c3dcc7 74%,#9cbca2 82%,#5c7d63 90%,#28402f 96%,#0b1210 100%) no-repeat;
+    color:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15px;padding:14px 26px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:.2s ease;letter-spacing:.01em}
+  .btn-primary{background:linear-gradient(135deg,var(--green),var(--green-2));color:#06210d}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(40,167,69,.35)}
+  .btn-ghost{background:transparent;color:var(--white);border-color:var(--line)}
+  .btn-ghost:hover{background:rgba(20,60,30,.06)}
+  .eyebrow{color:var(--green-2);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* Logo */
+  .logo{display:inline-flex;align-items:center}
+  .logo img{display:block}
+  .logo svg{height:40px;width:auto}
+  .logo .fit{color:var(--green)}
+  .logo .life{color:var(--white)}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:15px;font-weight:600}
+  .nav-links a:hover{color:var(--white)}
+  .burger{display:none;background:none;border:none;color:var(--white);font-size:26px;cursor:pointer}
+
+  /* Hero */
+  .hero{position:relative;padding:72px 0 32px;text-align:center;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 0%,rgba(40,167,69,.18),transparent 70%);pointer-events:none}
+  .hero .inner{position:relative;z-index:1}
+  .hero .pill{display:inline-flex;gap:8px;align-items:center;background:rgba(40,167,69,.14);color:var(--green-2);font-weight:700;font-size:13px;padding:8px 16px;border-radius:999px;margin-bottom:26px}
+  h1{font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacing:-.03em;font-weight:900;margin-bottom:20px}
+  h1 .hl{background:linear-gradient(135deg,var(--green),var(--green-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{font-size:clamp(17px,2.2vw,20px);color:var(--muted);max-width:56ch;margin:0 auto 34px}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .stat{margin-top:56px;display:inline-flex;flex-direction:column;align-items:center}
+  .stat b{font-size:34px;font-weight:900;color:var(--green-2)}
+  .stat span{color:var(--muted);font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+
+  section{padding:92px 0}
+  .sec-head{max-width:60ch;margin:0 auto 56px;text-align:center}
+  .sec-head h2{font-size:clamp(30px,4.5vw,46px);font-weight:900;letter-spacing:-.02em;margin:12px 0 12px}
+  .sec-head p{color:var(--muted);font-size:17px}
+
+  /* O mnie */
+  .about{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .about .txt h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.02em;margin:12px 0 18px}
+  .about .txt p{color:var(--muted);font-size:16px;margin-bottom:18px}
+  .about-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .mini{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .mini .big{font-size:32px;font-weight:900;color:var(--green-2)}
+  .mini h4{font-size:16px;margin:6px 0 4px}
+  .mini p{font-size:14px;color:var(--muted);margin:0}
+  .about .visual{aspect-ratio:4/5;border-radius:24px;background:linear-gradient(160deg,var(--green-dark),#0e2916);border:1px solid var(--line);display:grid;place-items:center;position:relative;overflow:hidden}
+  .about .visual svg{width:62%;height:auto;opacity:.95}
+
+  /* Oferta */
+  .offer{background:var(--ink-2)}
+  .cat-title{display:flex;align-items:center;gap:14px;margin:56px 0 24px}
+  .cat-title:first-of-type{margin-top:0}
+  .cat-title h3{font-size:22px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+  .cat-title .bar{height:2px;flex:1;background:linear-gradient(90deg,var(--green),transparent)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;display:flex;flex-direction:column;transition:.2s ease}
+  .plan:hover{transform:translateY(-4px);border-color:rgba(40,167,69,.4)}
+  .plan.premium{border-color:var(--green);box-shadow:0 0 0 1px rgba(40,167,69,.35),0 20px 44px rgba(20,60,30,.14)}
+  .plan .tagline{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--green-2);text-transform:uppercase;margin-bottom:10px}
+  .plan h4{font-size:19px;font-weight:800;margin-bottom:10px;line-height:1.25}
+  .plan p{color:var(--muted);font-size:15px;flex:1}
+  .plan .btn{margin-top:20px;width:100%}
+
+  /* Kalkulator */
+  .calc-shell{max-width:760px;margin:0 auto;background:var(--ink-2);border:1px solid var(--line);border-radius:24px;padding:38px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  .field.full{grid-column:1 / -1}
+  .field label{font-size:14px;font-weight:600;color:var(--muted)}
+  .field input,.field select{background:var(--card);border:1px solid var(--line);color:var(--white);border-radius:12px;padding:13px 14px;font-size:15px;font-family:inherit;outline:none;transition:.2s}
+  .field input:focus,.field select:focus{border-color:var(--green)}
+  .seg{display:flex;gap:10px}
+  .seg button{flex:1;background:var(--card);border:1px solid var(--line);color:var(--muted);padding:12px;border-radius:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+  .seg button.active{background:linear-gradient(135deg,var(--green),var(--green-2));color:#06210d;border-color:transparent}
+  .calc-result{margin-top:26px;text-align:center;background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .calc-result span{color:var(--muted);font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  .calc-result b{display:block;font-size:48px;font-weight:900;color:var(--green-2);margin-top:6px}
+  .calc-result small{color:var(--muted);font-size:13px}
+
+  /* Przemiany */
+  .przemiany-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .przemiana{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(20,60,30,.08)}
+  .p-img{position:relative;aspect-ratio:1/1;background:var(--ink-2)}
+  .przemiana img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+  .ph-inner{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:8px;color:var(--muted);z-index:1;text-align:center}
+  .ph-inner span{font-size:34px;opacity:.7}
+  .ph-inner small{font-size:13px;letter-spacing:.04em}
+  .przemiana figcaption{padding:12px 14px;font-size:14px;font-weight:600;color:var(--white);text-align:center}
+  @media(max-width:960px){.przemiany-grid{grid-template-columns:repeat(2,1fr)}}
+  #doswiadczenie{padding:60px 0;background:radial-gradient(760px 380px at 50% 46%,rgba(80,190,70,.13),transparent 70%),linear-gradient(180deg,rgba(22,18,14,0) 0%,rgba(22,18,14,1) 16%,#16120e 50%,rgba(22,18,14,1) 84%,rgba(22,18,14,0) 100%)}
+  .app-demo{max-width:1120px;margin:0 auto;border-radius:26px;overflow:hidden;border:0;background:transparent}
+  .app-demo iframe{display:block;width:100%;height:min(860px,calc(100vh - 28px));border:0}
+  .app-demo-head{display:none}
+
+  /* Prowadzenie żywieniowe */
+  .nutri{background:transparent}
+  .nutri .lead-block{max-width:760px;margin:0 auto 30px;text-align:center;color:var(--muted);font-size:16px}
+  .callout{display:flex;gap:14px;align-items:flex-start;max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:14px;padding:18px 20px}
+  .callout .ic{font-size:22px;line-height:1.2}
+  .callout p{font-size:15px;color:var(--white);margin:0}
+  .callout strong{color:var(--green-2)}
+  .steps-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-top:8px}
+  .stepc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .stepc .num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-2));color:#06210d;font-weight:800;display:grid;place-items:center;margin-bottom:14px}
+  .stepc h4{font-size:16px;margin-bottom:6px}
+  .stepc p{color:var(--muted);font-size:14px;margin:0}
+  /* Filary */
+  .filary{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:8px;align-items:stretch}
+  .filar{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;display:flex;flex-direction:column;transition:.2s ease}
+  .filar:hover{transform:translateY(-4px);border-color:rgba(40,167,69,.4)}
+  .filar .fnum{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green-2));color:#06210d;font-weight:800;display:grid;place-items:center;margin-bottom:16px;font-size:16px}
+  .filar h4{font-size:20px;font-weight:800;margin-bottom:10px;letter-spacing:-.01em}
+  .filar>p{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .filar ul{list-style:none;display:flex;flex-direction:column;gap:11px;margin-top:2px}
+  .filar li{display:flex;gap:10px;font-size:14.5px;color:var(--white);line-height:1.5}
+  .filar li::before{content:"✓";color:var(--green-2);font-weight:800;flex:0 0 auto}
+  .ftags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+  .ftags span{background:rgba(40,167,69,.1);color:var(--green-2);font-weight:800;font-size:13px;letter-spacing:.03em;padding:7px 13px;border-radius:999px;border:1px solid rgba(40,167,69,.28)}
+  /* Współpraca: kroki obok zdjęć aplikacji */
+  .wsp-layout{display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center;margin-top:8px}
+  .wsp-steps{display:flex;flex-direction:column;gap:14px}
+  .wsp-steps .stepc{display:flex;gap:16px;align-items:flex-start}
+  .wsp-steps .stepc .num{margin-bottom:0;flex:0 0 auto}
+  .wsp-visual{position:relative;padding-bottom:6%}
+  .wsp-visual .laptop{width:100%;display:block;filter:drop-shadow(0 18px 40px rgba(20,60,30,.18))}
+  .wsp-visual .phone{position:absolute;width:30%;right:-1%;bottom:-2%;z-index:3;filter:drop-shadow(0 14px 30px rgba(20,60,30,.22))}
+  @media(max-width:860px){
+    .wsp-layout{grid-template-columns:1fr;gap:28px}
+    .wsp-visual{max-width:440px;margin:0 auto}
+  }
+  .price-per{font-size:14px;color:var(--muted);margin-top:2px}
+  .gift-tag{display:flex;gap:8px;align-items:center;background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:16px;font-size:13px;color:var(--white)}
+  .gift-tag b{color:var(--green-2)}
+
+  /* CTA */
+  .cta-band{background:linear-gradient(135deg,var(--green-dark),#0c2413);border:1px solid var(--line);border-radius:28px;padding:60px 40px;text-align:center;margin:0 24px}
+  .cta-band h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.02em;margin-bottom:14px}
+  .cta-band p{color:#bfe8c8;font-size:17px;max-width:50ch;margin:0 auto 26px}
+
+  /* Footer */
+  footer{border-top:1px solid var(--line);padding:52px 0 40px}
+  .foot{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:flex-start}
+  .foot p{color:var(--muted);font-size:14px;max-width:34ch;margin-top:12px}
+  .socials{display:flex;gap:14px;margin-top:18px}
+  .socials a{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);transition:.2s}
+  .socials a:hover{color:var(--green-2);border-color:var(--green)}
+  .socials svg{width:20px;height:20px;fill:currentColor}
+  .copy{margin-top:38px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;text-align:center}
+  /* Stopka na ciemnym dole */
+  footer{border-top-color:rgba(255,255,255,.12);color:#e2eae3}
+  footer .foot p{color:#a9b8ad}
+  footer .foot a[href^="mailto"]{color:#a9b8ad !important}
+  footer .eyebrow{color:var(--green-2)}
+  footer .socials a{border-color:rgba(255,255,255,.18);color:#a9b8ad}
+  footer .socials a:hover{color:var(--green-2);border-color:var(--green)}
+  footer .copy{color:#8a988c;border-top-color:rgba(255,255,255,.12)}
+  footer .logo img{background:#fff;border-radius:10px;padding:6px 12px}
+
+  @media(max-width:860px){
+    .burger{display:inline-flex;align-items:center;justify-content:center}
+    .nav-links{display:none;position:absolute;top:74px;left:0;right:0;flex-direction:column;gap:4px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(20,60,30,.08);padding:12px 24px 18px}
+    .nav-links.open{display:flex}
+    .nav-links a{padding:12px 4px;font-size:16px;border-bottom:1px solid var(--line)}
+    .nav-links a:last-child{border-bottom:none}
+    .hero{padding:28px 0 48px}
+    section{padding:56px 0}
+    #doswiadczenie{padding:0;background:#16120e}
+    .app-demo{margin:0 auto;border-radius:0;border:0}
+    .app-demo iframe{height:calc(100vh - 92px)}
+    .app-demo-head{display:block;text-align:center;padding:16px 16px 8px;color:#fff;background:#16120e}
+    .app-demo-head h2{font-size:22px;font-weight:900;margin:0;letter-spacing:-.01em}
+    .app-demo-head p{font-size:12.5px;color:#b7c5ba;margin:5px 0 0}
+    .grid,.about,.form-grid,.about-cards,.steps-row,.przemiany-grid,.filary{grid-template-columns:1fr}
+    .calc-shell{padding:24px 18px}
+    .field{align-items:center}
+    .field label{text-align:center;width:100%}
+    .field input,.field select{text-align:center;width:100%}
+    .seg{justify-content:center}
+    .about .visual{aspect-ratio:16/12}
+  }
+</style>
+</head>
+<body>
+
+<!-- Reusable logo as SVG symbol -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5fe07a"/>
+      <stop offset="1" stop-color="#1e7a34"/>
+    </linearGradient>
+    <linearGradient id="trunk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f7d3f"/>
+      <stop offset="1" stop-color="#123d1e"/>
+    </linearGradient>
+    <symbol id="tree" viewBox="0 0 100 120">
+      <path d="M50 118 C46 96 44 84 46 68 L54 68 C56 84 54 96 50 118 Z" fill="url(#trunk)"/>
+      <path d="M50 90 C50 78 40 74 34 78 M50 82 C50 74 60 70 66 74" stroke="url(#trunk)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g fill="url(#leaf)">
+        <circle cx="50" cy="34" r="15"/>
+        <circle cx="33" cy="46" r="13"/>
+        <circle cx="67" cy="46" r="13"/>
+        <circle cx="26" cy="62" r="11"/>
+        <circle cx="74" cy="62" r="11"/>
+        <circle cx="42" cy="26" r="11"/>
+        <circle cx="60" cy="27" r="11"/>
+        <circle cx="50" cy="55" r="12"/>
+        <circle cx="38" cy="62" r="9"/>
+        <circle cx="62" cy="62" r="9"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#zywienie" aria-label="Fit-Life">
+      <img src="logo-fit-life.png" alt="Fit-Life" style="height:44px;width:auto">
+    </a>
+    <nav class="nav-links" id="menu">
+      <a href="#wspolpraca">Jak wygląda współpraca</a>
+      <a href="#cennik">Cennik</a>
+      <a href="#kalkulator">Kalkulator</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</header>
+
+<main>
+  <!-- PROWADZENIE ŻYWIENIOWE -->
+  <!-- HERO -->
+  <section class="hero" id="zywienie">
+    <div class="wrap inner">
+      <span class="pill">🌿 Prowadzenie żywieniowe</span>
+      <h1>Zbudujesz sylwetkę, jaką chcesz, bez przeszkód — <span class="hl">z planem, który nadąża za Tobą</span></h1>
+      <p class="lead">Nasz system manipulacji makroskładnikami gwarantuje zmiany w ciągu pierwszych 4 tygodni.</p>
+      <div class="hero-cta">
+        <a href="#doswiadczenie" class="btn btn-primary">Próbne doświadczenie</a>
+        <a href="#cennik" class="btn btn-ghost">Chcę działać już</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRZEMIANY -->
+  <section class="nutri" id="przemiany" style="padding-top:32px;padding-bottom:44px">
+    <div class="wrap">
+      <div class="sec-head" style="margin-bottom:40px">
+        <h2>Zacznij swoją przemianę!</h2>
+      </div>
+      <div class="przemiany-grid">
+        <figure class="przemiana"><div class="p-img"><img src="przemiana-1.jpg" alt="Przemiana podopiecznego" onerror="this.remove()"><div class="ph-inner"><span>📸</span><small>Zdjęcie przemiany</small></div></div></figure>
+        <figure class="przemiana"><div class="p-img"><img src="przemiana-2.jpg" alt="Przemiana podopiecznego" onerror="this.remove()"><div class="ph-inner"><span>📸</span><small>Zdjęcie przemiany</small></div></div></figure>
+        <figure class="przemiana"><div class="p-img"><img src="przemiana-3.jpg" alt="Przemiana podopiecznego" onerror="this.remove()"><div class="ph-inner"><span>📸</span><small>Zdjęcie przemiany</small></div></div></figure>
+        <figure class="przemiana"><div class="p-img"><img src="przemiana-4.jpg" alt="Przemiana podopiecznego" onerror="this.remove()"><div class="ph-inner"><span>📸</span><small>Zdjęcie przemiany</small></div></div></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAK WYGLĄDA WSPÓŁPRACA -->
+  <section class="nutri" id="wspolpraca" style="padding-top:32px">
+    <div class="wrap">
+      <div class="cat-title" style="margin-top:0"><h3>Jak wygląda współpraca</h3><span class="bar"></span></div>
+      <div class="filary">
+        <div class="filar">
+          <div class="fnum">1</div>
+          <h4>Integracja i obliczenia</h4>
+          <p>Łączymy jadłospis z Twoim planem treningowym — kalorie i makro pod dni treningowe i wolne. Każdy plan opieramy na profesjonalnych wskaźnikach:</p>
+          <div class="ftags"><span>CPM</span><span>PPM</span><span>TEA</span><span>NEAT</span></div>
+        </div>
+        <div class="filar">
+          <div class="fnum">2</div>
+          <h4>Plan skrojony pod Ciebie</h4>
+          <ul>
+            <li>Realne zasady, które da się utrzymać w Twoim życiu.</li>
+            <li>Jesz to, co lubisz — cheat meal to część planu, a nie ucieczka od niego.</li>
+            <li>Wszystko pod Twój czas i realne możliwości.</li>
+          </ul>
+        </div>
+        <div class="filar">
+          <div class="fnum">3</div>
+          <h4>Aplikacja i cotygodniowa opieka</h4>
+          <p>Cotygodniowe konsultacje i aplikacja, którą masz zawsze przy sobie:</p>
+          <ul>
+            <li>Cotygodniowy jadłospis dopasowany na podstawie Twoich raportów i postępów.</li>
+            <li>Baza zdrowych, smacznych przepisów — rośnie o +20 co miesiąc; dodajemy też posiłki klientów.</li>
+            <li>Kompletna lista zakupów na cały tydzień.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERAKTYWNE DOŚWIADCZENIE -->
+  <section id="doswiadczenie">
+    <div class="app-demo-head">
+      <h2>Próbne doświadczenie</h2>
+      <p>Kliknij — to interaktywny podgląd aplikacji</p>
+    </div>
+    <div class="app-demo">
+      <iframe id="appDemo" title="Interaktywne doświadczenie aplikacji Fit-Life" scrolling="no" src="fitlife-centrum-fit2.html"></iframe>
+    </div>
+  </section>
+
+  <section class="nutri" style="padding-top:44px">
+    <div class="wrap">
+      <div class="cat-title" id="cennik" style="margin-top:0"><h3>Zacznij współpracę</h3><span class="bar"></span></div>
+      <p style="color:var(--muted);font-size:15px;margin:-6px 0 24px">Przy wyborze pakietu <strong style="color:var(--white)">3- lub 6-miesięcznego</strong> otrzymujesz <strong style="color:var(--white)">wybrany plan treningowy w prezencie</strong>.</p>
+      <div class="grid">
+        <div class="plan">
+          <span class="tagline">1 miesiąc</span>
+          <h4 style="font-size:34px">349 zł</h4>
+          <div class="price-per">/ miesiąc</div>
+          <p style="margin-top:14px">Pełen program żywieniowy z cotygodniowymi konsultacjami.</p>
+          <a href="#kontakt" class="btn btn-ghost">Wybieram</a>
+        </div>
+        <div class="plan premium">
+          <span class="tagline">3 miesiące</span>
+          <h4 style="font-size:34px">749 zł</h4>
+          <div class="price-per">≈ 250 zł / miesiąc</div>
+          <p style="margin-top:14px">Cała opieka żywieniowa w korzystniejszej cenie.</p>
+          <div class="gift-tag">🎁 Wybrany <b>plan treningowy gratis</b></div>
+          <a href="#kontakt" class="btn btn-primary">Wybieram</a>
+        </div>
+        <div class="plan">
+          <span class="tagline">6 miesięcy</span>
+          <h4 style="font-size:34px">1249 zł</h4>
+          <div class="price-per">≈ 208 zł / miesiąc</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green-2);letter-spacing:.04em;margin-top:6px">✨ Najlepsza cena</div>
+          <p style="margin-top:14px">Najniższy koszt miesięczny dla długofalowych efektów.</p>
+          <div class="gift-tag">🎁 Wybrany <b>plan treningowy gratis</b></div>
+          <a href="#kontakt" class="btn btn-ghost">Wybieram</a>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:32px">
+        <span class="ic">📅</span>
+        <p><strong>Cotygodniowe konsultacje 15–20 minut.</strong> Regularne rozmowy, na których zbieramy informacje potrzebne do tworzenia i ulepszania Twoich cotygodniowych jadłospisów.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KALKULATOR -->
+  <section id="kalkulator">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Kalkulator</span>
+        <h2>Oblicz swoje zapotrzebowanie</h2>
+        <p>Wylicz dzienne zapotrzebowanie kaloryczne (TDEE) w kilka sekund.</p>
+      </div>
+      <div class="calc-shell">
+        <div class="form-grid">
+          <div class="field full">
+            <label>Płeć</label>
+            <div class="seg" id="sex">
+              <button type="button" class="active" data-v="m">Mężczyzna</button>
+              <button type="button" data-v="k">Kobieta</button>
+            </div>
+          </div>
+          <div class="field"><label>Wiek (lata)</label><input id="age" type="number" value="25" min="14" max="100"></div>
+          <div class="field"><label>Waga (kg)</label><input id="weight" type="number" value="75" min="30" max="250"></div>
+          <div class="field"><label>Wzrost (cm)</label><input id="height" type="number" value="178" min="120" max="230"></div>
+          <div class="field">
+            <label>Aktywność fizyczna</label>
+            <select id="activity">
+              <option value="1.2">Brak aktywności, praca siedząca</option>
+              <option value="1.375" selected>Niska (trening 1-3 razy/tydz.)</option>
+              <option value="1.55">Średnia (trening 3-5 razy/tydz.)</option>
+              <option value="1.725">Wysoka (trening 6-7 razy/tydz.)</option>
+              <option value="1.9">Bardzo wysoka (praca fiz. + trening)</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>Cel</label>
+            <select id="goal">
+              <option value="-500">Redukcja (chcę schudnąć)</option>
+              <option value="0" selected>Utrzymanie wagi</option>
+              <option value="400">Budowa masy (chcę przytyć)</option>
+            </select>
+          </div>
+          <div class="field full">
+            <button type="button" class="btn btn-primary" id="calcBtn" style="width:100%">Oblicz</button>
+          </div>
+        </div>
+        <div class="calc-result">
+          <span>Twoje zapotrzebowanie</span>
+          <b id="result">— kcal</b>
+          <small id="resultNote">Uzupełnij dane i kliknij „Oblicz”.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding-top:0">
+    <div class="cta-band">
+      <h2>Gotowy na zmianę?</h2>
+      <p>Rozpocznij współpracę już dziś i zbuduj formę, która zostanie z Tobą na lata.</p>
+      <a href="#cennik" class="btn btn-primary">Rozpocznij współpracę</a>
+    </div>
+  </section>
+
+</main>
+
+<footer id="kontakt">
+  <div class="wrap">
+    <div class="foot">
+      <div style="max-width:360px">
+        <a class="logo" href="#zywienie" aria-label="Fit-Life"><img src="logo-fit-life.png" alt="Fit-Life" style="height:40px;width:auto"></a>
+        <p>Indywidualne plany treningowe i jadłospisy. Zbuduj zdrowe nawyki na całe życie.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/mosiorek_13" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.17.4.36 1 .42 2.2.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 1.8-.42 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.17-1 .36-2.2.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.8-.25-2.2-.42-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.17-.4-.36-1-.42-2.2C2.21 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-1.8.42-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.17 1-.36 2.2-.42C8.4 2.21 8.8 2.2 12 2.2Zm0 1.8c-3.14 0-3.5 0-4.75.07-.9.04-1.4.2-1.7.32-.43.17-.74.37-1.06.7-.32.31-.52.62-.7 1.05-.12.3-.28.8-.32 1.7C3.4 8.5 3.4 8.86 3.4 12s0 3.5.07 4.75c.04.9.2 1.4.32 1.7.17.43.37.74.7 1.06.31.32.62.52 1.05.7.3.12.8.28 1.7.32 1.25.06 1.6.07 4.75.07s3.5 0 4.75-.07c.9-.04 1.4-.2 1.7-.32.43-.17.74-.37 1.06-.7.32-.31.52-.62.7-1.05.12-.3.28-.8.32-1.7.06-1.25.07-1.6.07-4.75s0-3.5-.07-4.75c-.04-.9-.2-1.4-.32-1.7-.17-.43-.37-.74-.7-1.06-.31-.32-.62-.52-1.05-.7-.3-.12-.8-.28-1.7-.32C15.5 4 15.14 4 12 4Zm0 3.05a4.95 4.95 0 1 1 0 9.9 4.95 4.95 0 0 1 0-9.9Zm0 1.8a3.15 3.15 0 1 0 0 6.3 3.15 3.15 0 0 0 0-6.3Zm5.15-.15a1.15 1.15 0 1 1-2.3 0 1.15 1.15 0 0 1 2.3 0Z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@mosiorek_13" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24"><path d="M16.6 5.8a4.8 4.8 0 0 1-1.1-3H12v12.3a2.7 2.7 0 1 1-2.7-2.7c.28 0 .55.04.8.12V9a5.7 5.7 0 1 0 4.9 5.65V9.4a7.9 7.9 0 0 0 4.6 1.47V7.4a4.8 4.8 0 0 1-3-1.6Z"/></svg>
+          </a>
+          <a href="mailto:kontakt@fit-life.pl" aria-label="Email">
+            <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm9 7.5L4.3 7h15.4L12 12.5Zm0 2.2L4 9v8h16V9l-8 5.7Z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:12px">Kontakt</div>
+        <a href="mailto:kontakt@fit-life.pl" style="color:var(--muted);font-size:15px">kontakt@fit-life.pl</a>
+      </div>
+    </div>
+    <div class="copy">© 2026 Fit-Life. Wszelkie prawa zastrzeżone.</div>
+  </div>
+</footer>
+
+<script>
+  // segmented control (płeć)
+  let sex = 'm';
+  document.querySelectorAll('#sex button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#sex button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); sex=b.dataset.v;
+    });
+  });
+
+  function calc(){
+    const age=+document.getElementById('age').value;
+    const w=+document.getElementById('weight').value;
+    const h=+document.getElementById('height').value;
+    const act=+document.getElementById('activity').value;
+    const goal=+document.getElementById('goal').value;
+    if(!age||!w||!h){document.getElementById('result').textContent='— kcal';return;}
+    // Mifflin-St Jeor
+    let bmr = 10*w + 6.25*h - 5*age + (sex==='m' ? 5 : -161);
+    const tdee = Math.round(bmr*act + goal);
+    document.getElementById('result').textContent = tdee.toLocaleString('pl-PL')+' kcal';
+    const note = goal<0 ? 'Deficyt kaloryczny na redukcję.' : goal>0 ? 'Nadwyżka na budowę masy.' : 'Zapotrzebowanie na utrzymanie wagi.';
+    document.getElementById('resultNote').textContent = note;
+  }
+  document.getElementById('calcBtn').addEventListener('click',calc);
+
+  // menu (mobile)
+  const burger=document.getElementById('burger'), menu=document.getElementById('menu');
+  burger.addEventListener('click',()=>{
+    const open=menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded',open);
+    burger.textContent=open?'✕':'☰';
+  });
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    menu.classList.remove('open');burger.setAttribute('aria-expanded',false);burger.textContent='☰';
+  }));
+
+
+  // doświadczenie próbne — telefon mieści się w ramce, przewija się jego zawartość
+  const fr=document.getElementById('appDemo');
+  if(fr){
+    function styleApp(){try{const d=fr.contentDocument;if(!d||!d.head||d.getElementById('fl-fit'))return;
+      const s=d.createElement('style');s.id='fl-fit';
+      s.textContent="html,body{height:100%!important;margin:0!important;overflow:hidden!important}.fl-root{height:100%!important;display:flex!important;flex-direction:column!important}.fl-wrap{height:100%!important;width:100%!important;margin:0 auto!important;padding:16px!important;gap:14px!important;justify-content:center!important}.fl-phone{height:100%!important;max-height:100%!important;min-height:0!important}.fl-phone-col{min-height:0!important}@media(min-width:860px){.fl-wrap{flex-direction:row!important;align-items:stretch!important;gap:44px!important;padding:22px!important}.fl-col{flex:0 1 420px!important;text-align:left!important;align-items:flex-start!important;justify-content:center!important}.fl-phone-col{flex:0 0 auto!important;align-items:center!important}}@media(max-width:859px){.fl-wrap{flex-direction:column!important;padding:8px 6px!important;gap:8px!important}.fl-col{gap:8px!important}.fl-eyebrow{display:none!important}.fl-h2{font-size:20px!important;line-height:1.15!important}.fl-p{font-size:12.5px!important;margin:0!important}.fl-feats{gap:6px!important}.fl-feat{padding:8px 12px!important}.fl-phone-col{flex:1 1 auto!important;height:auto!important;width:100%!important;min-height:0!important}.fl-phone{width:min(480px,calc(100vw - 8px))!important;height:100%!important}}";
+      d.head.appendChild(s);}catch(e){}}
+    fr.addEventListener('load',styleApp);
+    styleApp();
+    let n=0;const iv=setInterval(()=>{styleApp();if(++n>20)clearInterval(iv);},250);
+  }
+</script>
+</body>
+</html>
